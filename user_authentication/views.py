@@ -11,7 +11,7 @@ class CustomLoginView(APIView):
     """
     Custom login API. Expects POST request with fields 'email' and 'password'.
     Only non-customer users are allowed to login.
-    Returns auth token, user id, first name, and email upon successful authentication.
+    Returns auth token, user id, and email upon successful authentication.
     """
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
@@ -34,7 +34,6 @@ class CustomLoginView(APIView):
             return Response({
                 "auth_token": token.key,
                 "user_id": user.id,
-                "first_name": user.first_name,
                 "email": user.email,
             })
         else:

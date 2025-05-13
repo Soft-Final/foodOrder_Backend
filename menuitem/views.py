@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Sum
-from .models import MenuItem
-from .serializers import MenuItemSerializer
+from .models import MenuItem, Category
+from .serializers import MenuItemSerializer, CategorySerializer
 
 # Helper methods to check user types
 def is_kitchen(user):
@@ -49,6 +49,39 @@ class MenuItemViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    GET (list/retrieve): Publicly accessible.
+    POST, PUT, PATCH, DELETE: Restricted to kitchen staff.
+    """
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def create(self, request, *args, **kwargs):
+        if not is_kitchen(request.user):
+            return Response({"error": "Only kitchen staff can create categories."},
+                            status=status.HTTP_403_FORBIDDEN)
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if not is_kitchen(request.user):
+            return Response({"error": "Only kitchen staff can update categories."},
+                            status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if not is_kitchen(request.user):
+            return Response({"error": "Only kitchen staff can delete categories."},
+                            status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
+
 class AnalyticsView(APIView):
     """
     Admin-only view for analytics.
@@ -75,11 +108,9 @@ class AnalyticsView(APIView):
         if start_date:
             items = items.filter(created_at__gte=start_date)
 
-        # Determine the item with the highest order_count
         most_purchased = items.order_by('-order_count').first()
         most_purchased_data = MenuItemSerializer(most_purchased).data if most_purchased else {}
 
-        # Aggregate total cancelled orders from the filtered items
         total_cancelled = items.aggregate(total=Sum('cancelled_order_count'))['total'] or 0
 
         return Response({
