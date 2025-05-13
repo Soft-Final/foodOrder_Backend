@@ -47,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    # Removed 'first_name' and 'last_name' fields from REQUIRED_FIELDS
+
     REQUIRED_FIELDS = []
 
     def __str__(self):
