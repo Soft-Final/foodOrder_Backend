@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'user_authentication',
+    'menuitem',
 ]
 AUTH_USER_MODEL = 'user_authentication.User'
 
@@ -208,13 +210,12 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://10.121.4.121"
+    "http://localhost:3000",
 ]
 CORS_ALLOW_HEADERS = '*' 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
-    'http://10.121.4.121'
-    'http://10.121.4.121:8000'
+    'http://localhost:3000',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
