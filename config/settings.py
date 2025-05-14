@@ -181,14 +181,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # }
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('DB_NAME', BASE_DIR / 'db.sqlite3'),
-        'USER': os.getenv('DB_USER', ''),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', ''),
-        'PORT': os.getenv('DB_PORT', ''),
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),  # Set PostgreSQL engine
+        'NAME': os.getenv('DB_NAME', 'myuser'),  # Use the database name from .env
+        'USER': os.getenv('DB_USER', 'myuser'),  # Use the user from .env
+        'PASSWORD': os.getenv('DB_PASSWORD', 'cafe2025'),  # Use the password from .env
+        'HOST': os.getenv('DB_HOST', 'db'),  # The host should be the service name in docker-compose (db)
+        'PORT': os.getenv('DB_PORT', '5432'),  # The default PostgreSQL port
     }
 }
+
 # print("Your host is", environ.get("SQL_HOST"))
 
 # Internationalization

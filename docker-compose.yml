@@ -25,7 +25,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    environment:
+      - POSTGRES_USER=${DB_USER}  # Reference user from .env
+      - POSTGRES_PASSWORD=${DB_PASSWORD}  # Reference password from .env
+      - POSTGRES_DB=${DB_NAME}  # Reference database from .env
 
 volumes:
   postgres_data:
-
