@@ -14,6 +14,10 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     items = models.JSONField()  # Store the list of item IDs and their details
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_progress')
+    
+    # New fields for feedback
+    star_rating = models.PositiveSmallIntegerField(null=True, blank=True)
+    feedback = models.TextField(null=True, blank=True)
 
     @classmethod
     def generate_order_number(cls):
