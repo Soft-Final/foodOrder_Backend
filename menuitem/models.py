@@ -12,6 +12,7 @@ class MenuItem(models.Model):
     image = models.ImageField(upload_to='menu_images/', null=True, blank=True)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='menu_items')
+    description = models.CharField(max_length =500)
 
     # Timestamps for optional analytics filtering
     created_at = models.DateTimeField(auto_now_add=True)
