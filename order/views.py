@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.db import transaction, models
 from rest_framework.permissions import BasePermission
 from rest_framework.generics import RetrieveAPIView
+from .serializers import OrderFeedbackSerializer
 
 # Create your views here.
 
@@ -184,3 +185,20 @@ class PatchOrderView(APIView):
             return Response({'message': 'Order partially updated successfully'}, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
             return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class OrderFeedbackAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = OrderFeedbackSerializer(data=request.data)
+        if serializer.is_valid():
+            order_number = serializer.validated_data.get("order_number")
+            try:
+                order = Order.objects.get(order_number=order_number)
+            except Order.DoesNotExist:
+                return Response({"error": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            order.star_rating = serializer.validated_data.get("star_rating")
+            order.feedback = serializer.validated_data.get("feedback")
+            order.save()
+
+            return Response({"message": "Feedback updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
