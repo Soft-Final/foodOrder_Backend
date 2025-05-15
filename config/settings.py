@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'user_authentication',
     'menuitem',
+    'order',
 ]
 AUTH_USER_MODEL = 'user_authentication.User'
 
