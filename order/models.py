@@ -17,22 +17,16 @@ class Order(models.Model):
 
     @classmethod
     def generate_order_number(cls):
-        # Get current date in GMT+6
-        gmt6 = pytz.timezone('Asia/Almaty')  # GMT+6 timezone
-        current_date = timezone.now().astimezone(gmt6).date()
-        
-        # Get the last order number for today
-        last_order = cls.objects.filter(
-            created_at__date=current_date
-        ).order_by('-order_number').first()
-        
+        # Get the last order by order_number (regardless of date)
+        last_order = cls.objects.order_by('-order_number').first()
         if last_order:
-            # Extract the number from the last order number (ORD-1 -> 1)
-            last_number = int(last_order.order_number.split('-')[1])
+            try:
+                last_number = int(last_order.order_number.replace('ORD-', ''))
+            except (ValueError, AttributeError):
+                last_number = 0
             new_number = last_number + 1
         else:
             new_number = 1
-            
         return f"ORD-{new_number}"
 
     def __str__(self):

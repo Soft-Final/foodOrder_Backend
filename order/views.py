@@ -8,6 +8,7 @@ from menuitem.models import MenuItem
 from decimal import Decimal
 from django.db import transaction, models
 from rest_framework.permissions import BasePermission
+from rest_framework.generics import RetrieveAPIView
 
 # Create your views here.
 
@@ -104,3 +105,82 @@ class UpdateOrderStatusView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+class GetOrderView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, order_number, *args, **kwargs):
+        try:
+            order = Order.objects.get(order_number=order_number)
+            return Response({
+                'order_number': order.order_number,
+                'total_price': str(order.total_price),
+                'created_at': order.created_at,
+                'items': order.items,
+                'status': order.status
+            }, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class ListOrdersView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        orders = Order.objects.all().order_by('-created_at')
+        data = [
+            {
+                'order_number': order.order_number,
+                'total_price': str(order.total_price),
+                'created_at': order.created_at,
+                'items': order.items,
+                'status': order.status
+            }
+            for order in orders
+        ]
+        return Response(data, status=status.HTTP_200_OK)
+
+class DeleteOrderView(APIView):
+    permission_classes = [AllowAny]
+
+    def delete(self, request, order_number, *args, **kwargs):
+        try:
+            order = Order.objects.get(order_number=order_number)
+            order.delete()
+            return Response({'message': 'Order deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except Order.DoesNotExist:
+            return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class PutOrderView(APIView):
+    permission_classes = [AllowAny]
+
+    def put(self, request, order_number, *args, **kwargs):
+        try:
+            order = Order.objects.get(order_number=order_number)
+            data = request.data
+            # Update all fields (except order_number and created_at)
+            order.total_price = data.get('total_price', order.total_price)
+            order.items = data.get('items', order.items)
+            order.status = data.get('status', order.status)
+            order.save()
+            return Response({'message': 'Order updated successfully'}, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class PatchOrderView(APIView):
+    permission_classes = [AllowAny]
+
+    def patch(self, request, order_number, *args, **kwargs):
+        try:
+            order = Order.objects.get(order_number=order_number)
+            data = request.data
+            # Update only provided fields
+            if 'total_price' in data:
+                order.total_price = data['total_price']
+            if 'items' in data:
+                order.items = data['items']
+            if 'status' in data:
+                order.status = data['status']
+            order.save()
+            return Response({'message': 'Order partially updated successfully'}, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
