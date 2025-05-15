@@ -179,17 +179,21 @@ AUTH_PASSWORD_VALIDATORS = [
 #         "PORT": environ.get("SQL_PORT", default="5432"),
 #     }
 # }
+print("DB_NAME from env:", os.getenv('DB_NAME'))
+print("DB_USER from env:", os.getenv('DB_USER'))
+print("DB_PASSWORD from env:", os.getenv('DB_PASSWORD'))
+print("DB_HOST from env:", os.getenv('DB_HOST'))
+
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),  # Set PostgreSQL engine
-        'NAME': os.getenv('DB_NAME', 'myuser'),  # Use the database name from .env
-        'USER': os.getenv('DB_USER', 'myuser'),  # Use the user from .env
-        'PASSWORD': os.getenv('DB_PASSWORD', 'cafe2025'),  # Use the password from .env
-        'HOST': os.getenv('DB_HOST', 'db'),  # The host should be the service name in docker-compose (db)
-        'PORT': os.getenv('DB_PORT', '5432'),  # The default PostgreSQL port
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'mydatabase'),  # Changed default from 'myuser' to 'mydatabase'
+        'USER': os.getenv('DB_USER', 'myuser'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'cafe2025'),
+        'HOST': os.getenv('DB_HOST', 'db'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
-
 # print("Your host is", environ.get("SQL_HOST"))
 
 # Internationalization
