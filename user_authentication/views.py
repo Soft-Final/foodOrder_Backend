@@ -36,6 +36,7 @@ class CustomLoginView(APIView):
                 "auth_token": token.key,
                 "user_id": user.id,
                 "email": user.email,
+                "user_type": user.user_type
             })
         else:
             return Response(
