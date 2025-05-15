@@ -10,6 +10,7 @@ from django.db import transaction, models
 from rest_framework.permissions import BasePermission
 from rest_framework.generics import RetrieveAPIView
 from .serializers import OrderFeedbackSerializer
+from django.db.models import Avg
 
 # Create your views here.
 
@@ -206,3 +207,13 @@ class OrderFeedbackAPIView(APIView):
 
             return Response({"message": "Feedback updated successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AverageRatingAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        # Calculate the average star rating for orders that have a rating
+        avg_rating = Order.objects.filter(star_rating__isnull=False).aggregate(average=Avg('star_rating'))['average']
+        if avg_rating is None:
+            avg_rating = 0  # or return a message indicating no ratings available
+        return Response({"average_rating": avg_rating}, status=status.HTTP_200_OK)
