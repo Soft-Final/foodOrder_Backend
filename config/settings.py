@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'user_authentication',
     'menuitem',
     'order',
+    'analytics',
 ]
 AUTH_USER_MODEL = 'user_authentication.User'
 
