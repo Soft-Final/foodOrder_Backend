@@ -118,7 +118,9 @@ class GetOrderView(APIView):
                 'total_price': str(order.total_price),
                 'created_at': order.created_at,
                 'items': order.items,
-                'status': order.status
+                'status': order.status,
+                'star_rating': order.star_rating,
+                'feedback': order.feedback,
             }, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
             return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -134,7 +136,9 @@ class ListOrdersView(APIView):
                 'total_price': str(order.total_price),
                 'created_at': order.created_at,
                 'items': order.items,
-                'status': order.status
+                'status': order.status,
+                'star_rating': order.star_rating,
+                'feedback': order.feedback,
             }
             for order in orders
         ]
