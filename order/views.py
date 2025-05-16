@@ -192,6 +192,7 @@ class PatchOrderView(APIView):
             return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class OrderFeedbackAPIView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         serializer = OrderFeedbackSerializer(data=request.data)
         if serializer.is_valid():
