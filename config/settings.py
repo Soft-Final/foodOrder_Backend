@@ -165,12 +165,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",  # Set to SQLite
-        "NAME": BASE_DIR / "db.sqlite3",  #== Path to the SQLite database file
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",  # Set to SQLite
+#         "NAME": BASE_DIR / "db.sqlite3",  #== Path to the SQLite database file
+#     }
+# }
 # DATABASES = {
 #     "default": {
 #         "ENGINE": environ.get("SQL_ENGINE", default="django.db.backends.sqlite3"),
@@ -181,6 +181,21 @@ DATABASES = {
 #         "PORT": environ.get("SQL_PORT", default="5432"),
 #     }
 # }
+print("DB_NAME from env:", os.getenv('DB_NAME'))
+print("DB_USER from env:", os.getenv('DB_USER'))
+print("DB_PASSWORD from env:", os.getenv('DB_PASSWORD'))
+print("DB_HOST from env:", os.getenv('DB_HOST'))
+
+DATABASES = {
+    'default': {
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'mydatabase'),  # Changed default from 'myuser' to 'mydatabase'
+        'USER': os.getenv('DB_USER', 'myuser'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'cafe2025'),
+        'HOST': os.getenv('DB_HOST', 'db'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }
+}
 # print("Your host is", environ.get("SQL_HOST"))
 
 # Internationalization
